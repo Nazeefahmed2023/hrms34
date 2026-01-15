@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS Frontend-Backend Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 { color: #1976d2; }
+        h2 { color: #333; border-bottom: 2px solid #1976d2; padding-bottom: 10px; }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #1976d2;
+        }
+        .pass { color: #4caf50; font-weight: bold; }
+        .fail { color: #f44336; font-weight: bold; }
+        .warn { color: #ff9800; font-weight: bold; }
+        button {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #1565c0; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .credentials {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .badge-pass { background: #4caf50; color: white; }
+        .badge-fail { background: #f44336; color: white; }
+        .badge-pending { background: #ff9800; color: white; }
+        pre {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 HRMS Frontend-Backend Integration Test</h1>
+        <p>This page tests the communication between frontend and backend APIs.</p>
+        
+        <div class="credentials">
+            <strong>Test Credentials:</strong><br>
+            Admin: <code>admin / admin123</code><br>
+            Employee: <code>emp02 / emp123</code>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>1. Authentication Tests</h2>
+        
+        <div class="test-section">
+            <h3>Login as Admin <span id="login-status" class="status-badge badge-pending">Pending</span></h3>
+            <button onclick="testLogin()">Test Login</button>
+            <button onclick="testLogout()">Test Logout</button>
+            <div id="login-result" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>2. Dashboard API Tests</h2>
+        
+        <div class="test-section">
+            <h3>Dashboard Statistics <span id="dashboard-status" class="status-badge badge-pending">Pending</span></h3>
+            <button onclick="testDashboard()">Test Dashboard</button>
+            <button onclick="testDashboardStats()">Test Stats</button>
+            <div id="dashboard-result" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>3. Employee Management Tests</h2>
+        
+        <div class="test-section">
+            <h3>Employee APIs <span id="employee-status" class="status-badge badge-pending">Pending</span></h3>
+            <button onclick="testEmployeeList()">List Employees</button>
+            <button onclick="testDepartments()">List Departments</button>
+            <button onclick="testDesignations()">List Designations</button>
+            <div id="employee-result" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>4. Attendance Tests</h2>
+        
+        <div class="test-section">
+            <h3>Attendance APIs <span id="attendance-status" class="status-badge badge-pending">Pending</span></h3>
+            <button onclick="testAttendanceToday()">Today's Attendance</button>
+            <button onclick="testCheckIn()">Check In</button>
+            <button onclick="testMonthlyAttendance()">Monthly Report</button>
+            <div id="attendance-result" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>5. Leave Management Tests</h2>
+        
+        <div class="test-section">
+            <h3>Leave APIs <span id="leave-status" class="status-badge badge-pending">Pending</span></h3>
+            <button onclick="testLeaveList()">List Leaves</button>
+            <button onclick="testLeaveBalance()">Check Balance</button>
+            <div id="leave-result" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>6. Payroll Tests</h2>
+        
+        <div class="test-section">
+            <h3>Payroll APIs <span id="payroll-status" class="status-badge badge-pending">Pending</span></h3>
+            <button onclick="testPayrollList()">List Payroll</button>
+            <div id="payroll-result" class="result"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Test All</h2>
+        <button onclick="runAllTests()" style="background: #4caf50; font-size: 16px; padding: 15px 30px;">
+            🚀 Run All Tests
+        </button>
+        <div id="overall-result" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        let csrfToken = '';
+
+        // Get CSRF token
+        async function getCSRFToken() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/accounts/login/', {
+                    credentials: 'include'
+                });
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [name, value] = cookie.trim().split('=');
+                    if (name === 'csrftoken') {
+                        csrfToken = value;
+                        return value;
+                    }
+                }
+            } catch (error) {
+                console.error('Error getting CSRF token:', error);
+            }
+            return '';
+        }
+
+        function displayResult(elementId, content, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<pre>${JSON.stringify(content, null, 2)}</pre>`;
+            
+            const statusId = elementId.replace('-result', '-status');
+            const statusElement = document.getElementById(statusId);
+            if (statusElement) {
+                statusElement.className = 'status-badge ' + (isSuccess ? 'badge-pass' : 'badge-fail');
+                statusElement.textContent = isSuccess ? 'Pass' : 'Fail';
+            }
+        }
+
+        // Authentication Tests
+        async function testLogin() {
+            try {
+                await getCSRFToken();
+                const response = await fetch(`${API_BASE}/accounts/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    })
+                });
+                
+                const data = await response.json();
+                displayResult('login-result', {
+                    status: response.status,
+                    success: response.ok,
+                    data: data
+                }, response.ok);
+            } catch (error) {
+                displayResult('login-result', { error: error.message }, false);
+            }
+        }
+
+        async function testLogout() {
+            try {
+                const response = await fetch(`${API_BASE}/accounts/logout/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('login-result', {
+                    status: response.status,
+                    data: data
+                }, response.ok);
+            } catch (error) {
+                displayResult('login-result', { error: error.message }, false);
+            }
+        }
+
+        // Dashboard Tests
+        async function testDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('dashboard-result', {
+                    status: response.status,
+                    data: data
+                }, response.ok);
+            } catch (error) {
+                displayResult('dashboard-result', { error: error.message }, false);
+            }
+        }
+
+        async function testDashboardStats() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/stats/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('dashboard-result', {
+                    status: response.status,
+                    data: data
+                }, response.ok);
+            } catch (error) {
+                displayResult('dashboard-result', { error: error.message }, false);
+            }
+        }
+
+        // Employee Tests
+        async function testEmployeeList() {
+            try {
+                const response = await fetch(`${API_BASE}/employees/list/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('employee-result', {
+                    status: response.status,
+                    count: data.length,
+                    data: data.slice(0, 2) // Show first 2 employees
+                }, response.ok);
+            } catch (error) {
+                displayResult('employee-result', { error: error.message }, false);
+            }
+        }
+
+        async function testDepartments() {
+            try {
+                const response = await fetch(`${API_BASE}/employees/departments/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('employee-result', {
+                    status: response.status,
+                    count: data.length,
+                    data: data
+                }, response.ok);
+            } catch (error) {
+                displayResult('employee-result', { error: error.message }, false);
+            }
+        }
+
+        async function testDesignations() {
+            try {
+                const response = await fetch(`${API_BASE}/employees/designations/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('employee-result', {
+                    status: response.status,
+                    count: data.length,
+                    data: data
+                }, response.ok);
+            } catch (error) {
+                displayResult('employee-result', { error: error.message }, false);
+            }
+        }
+
+        // Attendance Tests
+        async function testAttendanceToday() {
+            try {
+                const response = await fetch(`${API_BASE}/attendance/today/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('attendance-result', {
+                    status: response.status,
+                    data: data
+                }, response.ok);
+            } catch (error) {
+                displayResult('attendance-result', { error: error.message }, false);
+            }
+        }
+
+        async function testCheckIn() {
+            try {
+                await getCSRFToken();
+                const response = await fetch(`${API_BASE}/attendance/check-in/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                displayResult('attendance-result', {
+                    status: response.status,
+                    data: data
+                }, response.ok || response.status === 400); // 400 is ok if already checked in
+            } catch (error) {
+                displayResult('attendance-result', { error: error.message }, false);
+            }
+        }
+
+        async function testMonthlyAttendance() {
+            try {
+                const response = await fetch(`${API_BASE}/attendance/monthly/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('attendance-result', {
+                    status: response.status,
+                    count: data.length,
+                    data: data.slice(0, 5) // Show first 5 records
+                }, response.ok);
+            } catch (error) {
+                displayResult('attendance-result', { error: error.message }, false);
+            }
+        }
+
+        // Leave Tests
+        async function testLeaveList() {
+            try {
+                const response = await fetch(`${API_BASE}/leaves/list/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('leave-result', {
+                    status: response.status,
+                    count: data.length,
+                    data: data.slice(0, 3)
+                }, response.ok);
+            } catch (error) {
+                displayResult('leave-result', { error: error.message }, false);
+            }
+        }
+
+        async function testLeaveBalance() {
+            try {
+                const response = await fetch(`${API_BASE}/leaves/balance/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('leave-result', {
+                    status: response.status,
+                    data: data
+                }, response.ok);
+            } catch (error) {
+                displayResult('leave-result', { error: error.message }, false);
+            }
+        }
+
+        // Payroll Tests
+        async function testPayrollList() {
+            try {
+                const response = await fetch(`${API_BASE}/payroll/list/`, {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                displayResult('payroll-result', {
+                    status: response.status,
+                    count: data.length,
+                    data: data.slice(0, 3)
+                }, response.ok);
+            } catch (error) {
+                displayResult('payroll-result', { error: error.message }, false);
+            }
+        }
+
+        // Run all tests sequentially
+        async function runAllTests() {
+            document.getElementById('overall-result').innerHTML = '<p>Running tests...</p>';
+            
+            await testLogin();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testDashboard();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testEmployeeList();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testAttendanceToday();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testLeaveList();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testPayrollList();
+            
+            document.getElementById('overall-result').innerHTML = 
+                '<p class="pass">✅ All tests completed! Check results above.</p>';
+        }
+
+        // Initialize
+        window.onload = async () => {
+            await getCSRFToken();
+            console.log('CSRF Token:', csrfToken);
+        };
+    </script>
+</body>
+</html>

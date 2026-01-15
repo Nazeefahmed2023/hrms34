@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <span class="fw-semibold fs-5">Apply Leave</span>
+  <a href="{{ request.META.HTTP_REFERER|default:'/dashboard/' }}" class="btn btn-outline-dark btn-sm">← Back</a>
+</div>
+
+
+<h3 class="mb-4 fw-bold">Apply Leave</h3>
+
+<form method="POST" autocomplete="off">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label class="form-label">Leave Type</label>
+        {{ form.leave_type }}
+
+
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Start Date</label>
+        {{ form.start_date }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">End Date</label>
+        {{ form.end_date }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Reason</label>
+        {{ form.reason }}
+    </div>
+
+    <button type="submit" class="btn btn-dark px-4">Submit Request</button>
+</form>
+
+{% endblock %}

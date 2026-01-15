@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <span class="fw-semibold fs-5">profile</span>
+<a href="/dashboard/" class="btn btn-outline-dark btn-sm">← Back</a>
+
+</div>
+
+
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4">My Profile</h3>
+
+    <div class="card shadow-sm p-4">
+
+        <div class="d-flex align-items-center gap-4 mb-4">
+            {% if profile.photo %}
+                <img src="{{ profile.photo.url }}" class="rounded" style="width:120px; height:120px; object-fit:cover;">
+            {% else %}
+                <img src="https://via.placeholder.com/120" class="rounded">
+            {% endif %}
+            <div>
+                <h4>{{ emp.user.get_full_name|default:emp.user.username }}</h4>
+                <p class="text-muted mb-0">{{ emp.designation }} — {{ emp.department }}</p>
+                <p class="text-muted">Employee ID: {{ emp.employee_id }}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <h5 class="fw-semibold mt-3">Personal Information</h5>
+        <p><strong>Phone:</strong> {{ profile.phone }}</p>
+        <p><strong>Email:</strong> {{ profile.personal_email }}</p>
+        <p><strong>Address:</strong> {{ profile.address }}</p>
+        <p><strong>Date of Birth:</strong> {{ profile.date_of_birth }}</p>
+        <p><strong>Emergency Contact:</strong> {{ profile.emergency_contact }}</p>
+
+        <h5 class="fw-semibold mt-4">Bank Details</h5>
+        <p><strong>Bank Name:</strong> {{ profile.bank_name }}</p>
+        <p><strong>Account Number:</strong> {{ profile.account_number }}</p>
+        <p><strong>IFSC Code:</strong> {{ profile.ifsc_code }}</p>
+
+        <div class="mt-4">
+            <a href="/employees/update-profile/" class="btn btn-warning">Edit Profile</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

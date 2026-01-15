@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold mb-3">Payroll Report</h3>
+
+<form method="get" class="d-flex gap-2 mb-3">
+  {% include "reports/month_dropdown.html" %}
+
+  <input type="number" name="year" class="form-control"
+         style="max-width:150px;" value="{{ request.GET.year }}" placeholder="Year">
+
+  <button class="btn btn-dark">Filter</button>
+  <a href="?{% if month %}month={{ month }}&{% endif %}{% if year %}year={{ year }}&{% endif %}export=pdf"
+     class="btn btn-danger">Export PDF</a>
+</form>
+
+<table class="table table-bordered table-striped text-center">
+<thead class="table-dark">
+<tr>
+  <th>Employee</th>
+  <th>Month</th>
+  <th>Year</th>
+  <th>Gross (₹)</th>
+  <th>Deductions (₹)</th>
+  <th>Net (₹)</th>
+</tr>
+</thead>
+<tbody>
+{% for r in records %}
+<tr>
+  <td>{{ r.employee.user.get_full_name }}</td>
+  <td>{{ r.get_month_display }}</td>
+  <td>{{ r.year }}</td>
+  <td>{{ r.gross_salary }}</td>
+  <td>{{ r.total_deductions }}</td>
+  <td class="fw-bold text-success">₹ {{ r.net_salary }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

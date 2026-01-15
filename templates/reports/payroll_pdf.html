@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3 style="text-align:center; margin-bottom:10px;">Payroll Report</h3>
+<table border="1" cellspacing="0" cellpadding="6" width="100%">
+<thead>
+<tr>
+  <th>Employee</th>
+  <th>Month</th>
+  <th>Year</th>
+  <th>Gross (₹)</th>
+  <th>Deductions (₹)</th>
+  <th>Net (₹)</th>
+</tr>
+</thead>
+<tbody>
+{% for r in records %}
+<tr>
+  <td>{{ r.employee.user.get_full_name }}</td>
+  <td>{{ r.get_month_display }}</td>
+  <td>{{ r.year }}</td>
+  <td>{{ r.gross_salary }}</td>
+  <td>{{ r.total_deductions }}</td>
+  <td>{{ r.net_salary }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</body>
+</html>

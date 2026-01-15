@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS - Human Resource Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .option-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 2px solid transparent;
+        }
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+        .option-card h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        .option-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        .features {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .features h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: left;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+        .feature-item:before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        .status {
+            background: #4caf50;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status">🟢 System Online</div>
+        <h1>🏢 HRMS</h1>
+        <p class="subtitle">Human Resource Management System</p>
+        
+        <div class="options">
+            <a href="/accounts/login/" class="option-card">
+                <h2>🖥️ Classic View</h2>
+                <p>Django-powered interface with server-side rendering. Full-featured and stable.</p>
+                <span class="btn">Access Classic View</span>
+            </a>
+            
+            <a href="/react/" class="option-card">
+                <h2>⚛️ React App</h2>
+                <p>Modern single-page application with Material-UI components. Fast and responsive.</p>
+                <span class="btn">Launch React App</span>
+            </a>
+        </div>
+
+        <div class="features">
+            <h3>System Features</h3>
+            <div class="feature-list">
+                <div class="feature-item">Employee Management</div>
+                <div class="feature-item">Attendance Tracking</div>
+                <div class="feature-item">Leave Management</div>
+                <div class="feature-item">Payroll Processing</div>
+                <div class="feature-item">Department Management</div>
+                <div class="feature-item">Role-Based Access</div>
+                <div class="feature-item">Dashboard Analytics</div>
+                <div class="feature-item">Profile Management</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; color: #999; font-size: 0.9em;">
+            <p><strong>Default Login:</strong> admin / admin123</p>
+            <p style="margin-top: 10px;">Version 1.0 | Django 6.0.1 + React 19.2.3</p>
+        </div>
+    </div>
+</body>
+</html>

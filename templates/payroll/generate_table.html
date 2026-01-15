@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <span class="fw-semibold fs-5">Generate Payroll</span>
+  <a href="{{ request.META.HTTP_REFERER|default:'/dashboard/' }}" class="btn btn-outline-dark btn-sm">← Back</a>
+</div>
+
+
+
+
+<h3 class="fw-bold mb-4">Generate Payroll</h3>
+<p class="text-muted mb-3">
+  Select an employee to generate payroll for the selected month.
+</p>
+
+<table class="table table-hover table-bordered align-middle">
+<thead class="table-dark">
+<tr>
+  <th>Emp ID</th>
+  <th>Employee</th>
+  <th>Designation</th>
+  <th>Salary</th>
+  <th class="text-center">Action</th>
+</tr>
+</thead>
+<tbody>
+{% for emp in employees %}
+<tr>
+  <td>{{ emp.employee_id }}</td>
+  <td>{{ emp.user.get_full_name }}</td>
+  <td>{{ emp.designation }}</td>
+  <td>₹ {{ emp.basic_salary }}</td>
+  <td class="text-center">
+    <a href="{% url 'payroll:generate' emp.id %}" class="btn btn-success btn-sm px-3">
+      Generate Payroll
+    </a>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="5" class="text-center text-muted py-4">
+    No employees found for payroll generation.
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+<a href="/dashboard/" class="btn btn-outline-dark mb-3">← Back to Dashboard</a>
+
+{% endblock %}

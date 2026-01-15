@@ -1,0 +1,25 @@
+<div class="mb-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+
+            {% if level1 %}
+            <li class="breadcrumb-item">
+                <a href="{{ url1 }}">{{ level1 }}</a>
+            </li>
+            {% endif %}
+
+            {% if level2 %}
+            <li class="breadcrumb-item">
+                <a href="{{ url2 }}">{{ level2 }}</a>
+            </li>
+            {% endif %}
+
+            {% if level3 %}
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ level3 }}
+            </li>
+            {% endif %}
+
+        </ol>
+    </nav>
+</div>

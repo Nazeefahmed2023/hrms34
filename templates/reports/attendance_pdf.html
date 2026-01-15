@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3 style="text-align:center;">Attendance Report</h3>
+<table border="1" cellspacing="0" cellpadding="6" width="100%">
+<tr>
+  <th>Employee</th><th>Date</th><th>Check-in</th><th>Check-out</th><th>Total Hours</th>
+</tr>
+{% for r in records %}
+<tr>
+  <td>{{ r.user.get_full_name }}</td>
+  <td>{{ r.date }}</td>
+  <td>{{ r.check_in }}</td>
+  <td>{{ r.check_out }}</td>
+  <td>{{ r.total_hours }}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>

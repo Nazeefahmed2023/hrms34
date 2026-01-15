@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-4 fw-bold">Reports Dashboard</h3>
+
+<div class="list-group">
+  <a href="{% url 'reports:employees_csv' %}" class="list-group-item list-group-item-action">
+    👥 Download Employee Report (CSV)
+  </a>
+  <a href="{% url 'reports:employees_pdf' %}" class="list-group-item list-group-item-action">
+    📄 Download Employee Report (PDF)
+  </a>
+  <a href="/payroll/?export=csv" class="list-group-item list-group-item-action">
+    💰 Download Payroll Report (CSV)
+  </a>
+  <a href="{% url 'payroll:list' %}" class="list-group-item list-group-item-action">
+    📄 View Payroll Records / Payslip
+  </a>
+  <a href="/reports/attendance/" class="list-group-item list-group-item-action">
+  🕒 Attendance Report (Month-wise)
+</a>
+
+</div>
+
+{% endblock %}

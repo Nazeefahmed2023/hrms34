@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <span class="fw-semibold fs-5">Payroll Records</span>
+  <a href="{{ request.META.HTTP_REFERER|default:'/dashboard/' }}" class="btn btn-outline-dark btn-sm">← Back</a>
+</div>
+
+<!-- Filter -->
+<form method="GET" class="d-flex mb-3 gap-2">
+
+  <select name="month" class="form-select" style="max-width:160px;">
+    <option value="">All Months</option>
+    <option value="1" {% if request.GET.month == "1" %}selected{% endif %}>January</option>
+    <option value="2" {% if request.GET.month == "2" %}selected{% endif %}>February</option>
+    <option value="3" {% if request.GET.month == "3" %}selected{% endif %}>March</option>
+    <option value="4" {% if request.GET.month == "4" %}selected{% endif %}>April</option>
+    <option value="5" {% if request.GET.month == "5" %}selected{% endif %}>May</option>
+    <option value="6" {% if request.GET.month == "6" %}selected{% endif %}>June</option>
+    <option value="7" {% if request.GET.month == "7" %}selected{% endif %}>July</option>
+    <option value="8" {% if request.GET.month == "8" %}selected{% endif %}>August</option>
+    <option value="9" {% if request.GET.month == "9" %}selected{% endif %}>September</option>
+    <option value="10" {% if request.GET.month == "10" %}selected{% endif %}>October</option>
+    <option value="11" {% if request.GET.month == "11" %}selected{% endif %}>November</option>
+    <option value="12" {% if request.GET.month == "12" %}selected{% endif %}>December</option>
+  </select>
+
+  <input type="number" name="year" class="form-control" style="max-width:160px;"
+         placeholder="Year" value="{{ request.GET.year }}">
+
+  <button class="btn btn-dark">Filter</button>
+
+  {% if request.user.role in "ADMIN,HR" %}
+    <a href="?export=csv" class="btn btn-success ms-2">Export CSV</a>
+  {% endif %}
+</form>
+
+<table class="table table-sm table-bordered align-middle text-center">
+  <thead class="table-dark">
+    <tr>
+      <th>Emp ID</th>
+      <th>Employee</th>
+      <th>Month</th>
+      <th>Year</th>
+      <th>Gross Salary</th>
+      <th>Total Deductions</th>
+      <th>Net Salary</th>
+      <th>Payslip</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for item in records %}
+    <tr>
+      <td>{{ item.employee.employee_id }}</td>
+      <td>{{ item.employee.user.get_full_name }}</td>
+      <td>{{ item.month|add:"-1"|date:"F" }}</td>
+      <td>{{ item.year }}</td>
+      <td class="text-end">₹ {{ item.gross_salary }}</td>
+      <td class="text-end text-danger">₹ {{ item.total_deductions }}</td>
+      <td class="fw-bold text-end text-success">₹ {{ item.net_salary }}</td>
+      <td>
+        <a href="{% url 'payroll:payslip_pdf' item.id %}" class="btn btn-outline-dark btn-sm">
+          PDF
+        </a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr>
+      <td colspan="8" class="text-center text-muted py-3">
+        No payroll records found
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

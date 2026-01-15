@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="fw-bold">HR Dashboard</h4>
+</div>
+
+<!-- Top Stats Section -->
+<div class="row g-3 mb-4">
+
+  <div class="col-md-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body text-center">
+        <i class="bi bi-people-fill fs-2 text-primary"></i>
+        <h6 class="mt-2 text-muted">Total Employees</h6>
+        <p class="fs-3 fw-bold">{{ total_employees }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body text-center">
+        <i class="bi bi-envelope-open fs-2 text-warning"></i>
+        <h6 class="mt-2 text-muted">Pending Leaves  Request</h6>
+        <p class="fs-3 fw-bold">{{ pending_leaves }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body text-center">
+        <i class="bi bi-person-badge fs-2 text-danger"></i>
+        <h6 class="mt-2 text-muted">Pending Profiles</h6>
+        <p class="fs-3 fw-bold">{{ pending_profiles_count }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body text-center">
+        <i class="bi bi-building fs-2 text-success"></i>
+        <h6 class="mt-2 text-muted">Departments</h6>
+        <p class="fs-3 fw-bold">{{ total_departments }}</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Quick Actions (Highlighted) -->
+<h5 class="fw-bold mt-4 mb-3"> Quick Actions</h5>
+<div class="row g-3 mb-4">
+
+  <div class="col-md-3">
+    <a href="{% url 'employees:create' %}" class="btn btn-lg btn-primary w-100 fw-semibold py-3">
+       Add Employee
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="{% url 'employees:employee_list' %}" class="btn btn-lg btn-outline-primary w-100 fw-semibold py-3">
+       View Employees
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="{% url 'leaves:admin_list' %}" class="btn btn-lg btn-outline-primary w-100 fw-semibold py-3">
+       Manage Leave Requests
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="{% url 'employees:pending_profiles' %}" class="btn btn-lg btn-warning text-dark w-100 fw-semibold py-3">
+       Review Pending Profiles
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="{% url 'payroll:list' %}?mode=generate" class="btn btn-lg btn-success text-dark w-100 fw-semibold py-3">
+       Generate Payroll
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="{% url 'employees:manage_departments' %}" class="btn btn-lg btn-dark w-100 fw-semibold py-3">
+      Assign Managers
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="/reports/" class="btn btn-lg btn-secondary w-100 fw-semibold py-3">
+      Reports
+    </a>
+  </div>
+
+</div>
+
+<!-- Graph Section (Moved to Bottom) -->
+<div class="card shadow-sm border-0 mb-2 mt-4">
+  <div class="card-body">
+    <h6 class="fw-semibold mb-3">Employee Distribution by Department</h6>
+    <canvas id="deptChart" height="100"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+fetch("{% url 'dashboard:stats_api' %}")
+  .then(response => response.json())
+  .then(data => {
+    new Chart(document.getElementById("deptChart"), {
+      type: "bar",
+      data: {
+        labels: data.map(d => d.name),
+        datasets: [{
+          data: data.map(d => d.count),
+          backgroundColor: "#0d6efd88"
+        }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+});
+</script>
+
+{% endblock %}

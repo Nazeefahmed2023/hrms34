@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <span class="fw-semibold fs-5">Manage Leave Requests</span>
+  <a href="{{ request.META.HTTP_REFERER|default:'/dashboard/' }}" class="btn btn-outline-dark btn-sm">← Back</a>
+</div>
+
+<h3 class="mb-4 fw-bold">Leave Requests — Management</h3>
+
+{% if messages %}
+  {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }} text-center">{{ msg }}</div>
+  {% endfor %}
+{% endif %}
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Employee</th>
+      <th>Type</th>
+      <th>From</th>
+      <th>To</th>
+      <th>Reason</th>
+      <th>Status</th>
+      <th>Applied</th>
+      <th>Action</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    {% for leave in leaves %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ leave.employee }}</td>
+      <td>{{ leave.get_leave_type_display }}</td>
+      <td>{{ leave.start_date }}</td>
+      <td>{{ leave.end_date }}</td>
+      <td>{{ leave.reason }}</td>
+      <td>
+        {% if leave.status == "PENDING" %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% elif leave.status == "APPROVED" %}
+          <span class="badge bg-success">Approved</span>
+        {% else %}
+          <span class="badge bg-danger">Rejected</span>
+        {% endif %}
+      </td>
+      <td>{{ leave.created_at|date:"d M Y H:i" }}</td>
+      <td>
+        {% if leave.status == "PENDING" %}
+          <a href="{% url 'leaves:approve' leave.id %}" class="btn btn-success btn-sm">Approve</a>
+          <a href="{% url 'leaves:reject' leave.id %}" class="btn btn-danger btn-sm">Reject</a>
+        {% else %}
+          —
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="8" class="text-center">No leave requests found</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="mb-4 fw-bold">Update Profile</h3>
+
+    <!-- Basic employee info (READ ONLY) -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <p><strong>Employee ID:</strong> {{ emp.employee_id }}</p>
+            <p><strong>Name:</strong> {{ emp.user.get_full_name|default:emp.user.username }}</p>
+            <p><strong>Designation:</strong> {{ emp.designation }}</p>
+            <p><strong>Department:</strong> {{ emp.department }}</p>
+        </div>
+    </div>
+
+    <!-- Profile update form (editable) -->
+    <form method="POST" enctype="multipart/form-data" class="p-4 shadow-sm rounded bg-white">
+        {% csrf_token %}
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="fw-semibold">Photo</label><br>
+                {% if profile.photo %}
+                    <img src="{{ profile.photo.url }}" class="img-thumbnail mb-2" style="max-width:120px;">
+                {% endif %}
+                {{ form.photo }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="fw-semibold">Phone</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="col-md-4">
+                <label class="fw-semibold">Personal Email</label>
+                {{ form.personal_email }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-semibold">Address</label>
+            {{ form.address }}
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="fw-semibold">Date of Birth</label>
+                {{ form.date_of_birth }}
+            </div>
+            <div class="col-md-4">
+                <label class="fw-semibold">Emergency Contact</label>
+                {{ form.emergency_contact }}
+            </div>
+        </div>
+
+        <h5 class="mt-4">Bank Information</h5>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="fw-semibold">Bank Name</label>
+                {{ form.bank_name }}
+            </div>
+            <div class="col-md-4">
+                <label class="fw-semibold">Account Number</label>
+                {{ form.account_number }}
+            </div>
+            <div class="col-md-4">
+                <label class="fw-semibold">IFSC Code</label>
+                {{ form.ifsc_code }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary px-4">Save</button>
+    </form>
+</div>
+
+{% endblock %}

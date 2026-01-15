@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: DejaVu Sans, sans-serif; font-size: 13px; }
+  .header { text-align: center; margin-bottom: 12px; }
+  .company { font-size: 24px; font-weight: bold; letter-spacing: 0.5px; }
+  .subtitle { font-size: 15px; margin-bottom: 3px; }
+
+  .line { border-bottom: 2px solid #000; margin: 8px 0 15px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 7px; }
+  th, td { border: 1px solid #333; padding: 6px; }
+  th { background: #e8e8e8; font-weight: bold; }
+
+  .sec-title { background: #1c1c1c; color: #fff; font-weight: bold; padding: 6px; margin-top: 18px; }
+  .right { text-align: right; }
+  .net { background: #c0ffd1; font-weight: bold; font-size: 15px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="company">CoreConnect Pvt Ltd</div>
+  <div class="subtitle">Salary Payslip</div>
+  <div class="subtitle">Month: {{ payroll.month }} &nbsp;&nbsp; Year: {{ payroll.year }}</div>
+</div>
+<div class="line"></div>
+
+<!-- EMPLOYEE DETAILS -->
+<div class="sec-title">Employee Details</div>
+<table>
+<tr>
+  <th>Name</th><td>{{ payroll.employee.user.get_full_name }}</td>
+  <th>Employee ID</th><td>{{ payroll.employee.employee_id }}</td>
+</tr>
+<tr>
+  <th>Designation</th><td>{{ payroll.employee.designation }}</td>
+  <th>Department</th><td>{{ payroll.employee.department }}</td>
+</tr>
+<tr>
+  <th>Bank</th><td>{{ payroll.employee.user.profile.bank_name|default:"—" }}</td>
+  <th>Account No.</th><td>{{ payroll.employee.user.profile.account_number|default:"—" }}</td>
+</tr>
+</table>
+
+<!-- ATTENDANCE -->
+<div class="sec-title">Attendance Summary</div>
+<table>
+<tr>
+  <th>Working Days</th><td>{{ payroll.working_days }}</td>
+  <th>Present Days</th><td>{{ payroll.present_days }}</td>
+</tr>
+<tr>
+  <th>Absent Days</th><td>{{ payroll.absent_days }}</td>
+  <th>LOP Days</th><td>{{ payroll.lop_days }}</td>
+</tr>
+</table>
+
+<!-- SALARY -->
+<div class="sec-title">Salary Breakdown</div>
+<table>
+<tr>
+  <th>Earnings</th><th class="right">Amount (₹)</th>
+  <th>Deductions</th><th class="right">Amount (₹)</th>
+</tr>
+<tr>
+  <td>Basic Salary</td><td class="right">{{ payroll.basic_salary }}</td>
+  <td>Loss of Pay (LOP)</td><td class="right">{{ payroll.lop_amount }}</td>
+</tr>
+<tr>
+  <td>HRA (40%)</td><td class="right">{{ payroll.hra }}</td>
+  <td>PF (12%)</td><td class="right">{{ payroll.pf }}</td>
+</tr>
+<tr>
+  <td>Allowance (20%)</td><td class="right">{{ payroll.allowance }}</td>
+  <td>Professional Tax</td><td class="right">{{ payroll.professional_tax }}</td>
+</tr>
+</table>
+
+<!-- NET SALARY -->
+<table style="margin-top:10px;">
+<tr>
+  <th class="net">Net Salary (₹)</th>
+  <td class="net right">{{ payroll.net_salary }}</td>
+</tr>
+</table>
+
+<br><br>
+
+<table style="border:none;">
+<tr style="border:none;">
+  <td style="border:none; font-size:11px;">
+    <strong>Declaration:</strong><br>
+    This is a system-generated payslip and does not require a physical signature.<br>
+    Powered by HRMS Software — CoreConnect Pvt Ltd
+  </td>
+  <td style="border:none; text-align:right; font-size:11px;">
+    <strong>Authorized Signatory</strong><br><br>
+    ______________________________
+  </td>
+</tr>
+</table>
+
+</body>
+</html>
