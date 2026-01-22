@@ -6,7 +6,7 @@ from django.template.loader import get_template
 from django.contrib import messages
 from calendar import monthrange
 from django.db.models import Sum, F, ExpressionWrapper, IntegerField
-# from xhtml2pdf import pisa  # Not needed for React frontend
+from xhtml2pdf import pisa  # Not needed for React frontend
 from decimal import Decimal
 from datetime import date, timedelta
 

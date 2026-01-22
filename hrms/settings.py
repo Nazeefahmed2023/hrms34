@@ -157,12 +157,17 @@ SIMPLE_JWT = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 # CORS Settings for React
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
-
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF trusted origins for cross-origin requests
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 LOGIN_URL = '/accounts/login/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'

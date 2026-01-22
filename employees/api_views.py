@@ -31,35 +31,48 @@ def create_employee_api(request):
         return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
     
     serializer = EmployeeCreateSerializer(data=request.data)
-    if serializer.is_valid():
-        # Create user
-        user = User.objects.create_user(
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password'],
-            first_name=serializer.validated_data.get('first_name', ''),
-            last_name=serializer.validated_data.get('last_name', ''),
-            email=serializer.validated_data.get('email', ''),
-            role='EMPLOYEE'
-        )
-        
-        # Create employee
-        employee = Employee.objects.create(
-            user=user,
-            department=serializer.validated_data['department'],
-            designation=serializer.validated_data['designation'],
-            date_of_joining=serializer.validated_data['date_of_joining'],
-            basic_salary=serializer.validated_data['basic_salary']
-        )
-        
-        # Create employee profile
-        EmployeeProfile.objects.create(employee=user)
-        
-        return Response(
-            EmployeeSerializer(employee).data,
-            status=status.HTTP_201_CREATED
-        )
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        if serializer.is_valid():
+            # Check if username already exists
+            user = User.objects.filter(username=serializer.validated_data['username']).first()
+            if user is None:
+                # Create user if not exists
+                user = User.objects.create_user(
+                    username=serializer.validated_data['username'],
+                    password=serializer.validated_data['password'],
+                    first_name=serializer.validated_data.get('first_name', ''),
+                    last_name=serializer.validated_data.get('last_name', ''),
+                    email=serializer.validated_data.get('email', ''),
+                    role='EMPLOYEE'
+                )
+
+            # If employee already exists for this user, return it
+            employee = getattr(user, 'employee', None)
+            if employee is None:
+                employee = Employee.objects.create(
+                    user=user,
+                    department=serializer.validated_data['department'],
+                    designation=serializer.validated_data['designation'],
+                    date_of_joining=serializer.validated_data['date_of_joining'],
+                    basic_salary=serializer.validated_data['basic_salary']
+                )
+                # Create employee profile with default values for required fields
+                EmployeeProfile.objects.create(
+                    employee=user,
+                    phone='',
+                    personal_email=user.email or '',
+                    address=''
+                )
+
+            return Response(
+                EmployeeSerializer(employee).data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        import traceback
+        return Response({'error': str(e), 'trace': traceback.format_exc()}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])

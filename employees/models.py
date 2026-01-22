@@ -47,9 +47,9 @@ class EmployeeProfile(models.Model):
     )
 
     photo = models.ImageField(upload_to="employee_photos/", blank=True, null=True)
-    phone = models.CharField(max_length=15)
-    personal_email = models.EmailField()
-    address = models.TextField()
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    personal_email = models.EmailField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
 
     date_of_birth = models.DateField(blank=True, null=True)
     emergency_contact = models.CharField(max_length=50, blank=True, null=True)
