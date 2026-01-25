@@ -40,7 +40,7 @@ class Employee(models.Model):
 from django.conf import settings
 
 class EmployeeProfile(models.Model):
-    employee = models.OneToOneField(
+    user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="profile"
@@ -64,4 +64,4 @@ class EmployeeProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Profile of {self.employee.username}"
+        return f"Profile of {self.user.username}"

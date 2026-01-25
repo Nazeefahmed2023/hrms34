@@ -28,9 +28,9 @@
   <tbody>
     {% for p in profiles %}
     <tr>
-      <td>{{ p.employee.get_full_name|default:p.employee.username }}</td>
-      <td>{{ p.employee.employee.department }}</td>
-      <td>{{ p.employee.employee.designation }}</td>
+      <td>{{ p.user.get_full_name|default:p.user.username }}</td>
+      <td>{{ p.user.employee.department }}</td>
+      <td>{{ p.user.employee.designation }}</td>
       <td>{{ p.updated_at|date:"d-m-Y h:i A" }}</td>
       <td>
         <a href="/employees/approve-profile/{{ p.id }}/" class="btn btn-success btn-sm">

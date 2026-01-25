@@ -65,7 +65,7 @@ def employee_list(request):
 #             )
 
 #             # 3) Automatically create employee profile
-#             EmployeeProfile.objects.create(employee=user)
+#             EmployeeProfile.objects.create(user=user)
 #     # ✔ correct
 
 
@@ -126,7 +126,7 @@ from .forms import EmployeeProfileForm
 @login_required
 def update_profile(request):
     user = request.user
-    profile, _ = EmployeeProfile.objects.get_or_create(employee=user)
+    profile, _ = EmployeeProfile.objects.get_or_create(user=user)
 
     if request.method == "POST":
         form = EmployeeProfileForm(request.POST, request.FILES, instance=profile)
@@ -183,7 +183,7 @@ def view_profile(request):
             if not logged_in_emp or target.user_id != user.id:
                 raise PermissionDenied
 
-    profile, _ = EmployeeProfile.objects.get_or_create(employee=target.user)
+    profile, _ = EmployeeProfile.objects.get_or_create(user=target.user)
 
     return render(request, "employees/view_profile.html", {
         "emp": target,
@@ -193,7 +193,7 @@ def view_profile(request):
 #                 raise PermissionDenied
 
 #     # Profile model links to USER (employee.user)
-#     profile, _ = EmployeeProfile.objects.get_or_create(employee=target.user)
+#     profile, _ = EmployeeProfile.objects.get_or_create(user=target.user)
 
 #     return render(request, "employees/profile_view.html", {
 #         "emp": target,
@@ -214,7 +214,7 @@ def pending_profiles(request):
 
     pending = EmployeeProfile.objects.filter(
         verified=False,
-        employee__role="EMPLOYEE"   # 🔥 show employee profiles only
+        user__role="EMPLOYEE"   # 🔥 show employee profiles only
     )
 
     return render(request, "employees/pending_profiles.html", {"profiles": pending})
@@ -284,7 +284,7 @@ def create_employee(request):
             )
 
             # 3) Automatically create employee profile
-            EmployeeProfile.objects.create(employee=user)
+            EmployeeProfile.objects.create(user=user)
 
             messages.success(request, "Employee created successfully!")
             return redirect("employees:employee_list")

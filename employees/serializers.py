@@ -41,14 +41,14 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 
 class EmployeeProfileSerializer(serializers.ModelSerializer):
-    employee_name = serializers.CharField(source='employee.get_full_name', read_only=True)
-    employee_username = serializers.CharField(source='employee.username', read_only=True)
+    employee_name = serializers.CharField(source='user.get_full_name', read_only=True)
+    employee_username = serializers.CharField(source='user.username', read_only=True)
     photo_url = serializers.SerializerMethodField()
     
     class Meta:
         model = EmployeeProfile
         fields = [
-            'id', 'employee', 'employee_name', 'employee_username',
+            'id', 'user', 'employee_name', 'employee_username',
             'photo', 'photo_url', 'phone', 'personal_email', 'address',
             'date_of_birth', 'emergency_contact', 'bank_name',
             'account_number', 'ifsc_code', 'verified',

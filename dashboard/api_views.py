@@ -30,8 +30,8 @@ def dashboard_api(request):
         
         if dept:
             from employees.serializers import EmployeeSerializer, EmployeeProfileSerializer
-            
-            profile, _ = EmployeeProfile.objects.get_or_create(employee=request.user)
+
+            profile, _ = EmployeeProfile.objects.get_or_create(user=emp.user)
             context['employee'] = EmployeeSerializer(emp).data
             context['profile'] = EmployeeProfileSerializer(profile, context={'request': request}).data
             context['profile_pending'] = not profile.verified
@@ -80,7 +80,7 @@ def dashboard_api(request):
         from employees.serializers import EmployeeSerializer, EmployeeProfileSerializer
         
         emp = Employee.objects.get(user=user)
-        profile, _ = EmployeeProfile.objects.get_or_create(employee=emp.user)
+        profile, _ = EmployeeProfile.objects.get_or_create(user=emp.user)
         
         context['employee'] = EmployeeSerializer(emp).data
         context['profile'] = EmployeeProfileSerializer(profile, context={'request': request}).data
@@ -110,7 +110,7 @@ def dashboard_api(request):
         
         context['pending_profiles_count'] = EmployeeProfile.objects.filter(
             verified=False,
-            employee__role="EMPLOYEE"
+            user__role="EMPLOYEE"
         ).count()
         
         leaves = LeaveRequest.objects.select_related("employee").order_by("-created_at")[:10]

@@ -37,13 +37,11 @@ def setup_test_users():
     
     # Get or create department and designation
     dept, _ = Department.objects.get_or_create(
-        name='Engineering',
-        defaults={'description': 'Engineering Department'}
+        name='Engineering'
     )
     
     designation, _ = Designation.objects.get_or_create(
-        title='Software Engineer',
-        defaults={'description': 'Software Engineer'}
+        name='Software Engineer'
     )
     
     # Create test employee user
@@ -64,14 +62,10 @@ def setup_test_users():
         user=emp_user,
         defaults={
             'employee_id': 'EMP001',
-            'first_name': 'Test',
-            'last_name': 'Employee',
-            'email': 'employee@hrms.com',
-            'phone': '1234567890',
             'department': dept,
             'designation': designation,
             'date_of_joining': '2024-01-01',
-            'salary': 50000
+            'basic_salary': 50000
         }
     )
     print(f"{'Created' if created else 'Updated'} employee user: employee/emp123")
@@ -93,14 +87,10 @@ def setup_test_users():
         user=mgr_user,
         defaults={
             'employee_id': 'MGR001',
-            'first_name': 'Test',
-            'last_name': 'Manager',
-            'email': 'manager@hrms.com',
-            'phone': '1234567891',
             'department': dept,
             'designation': designation,
             'date_of_joining': '2023-01-01',
-            'salary': 80000
+            'basic_salary': 80000
         }
     )
     print(f"{'Created' if created else 'Updated'} manager user: manager/mgr123")
